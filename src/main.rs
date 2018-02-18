@@ -1,101 +1,76 @@
 extern crate rand;
-use rand::Rng;
 use rand::distributions::{IndependentSample, Range};
 use std::io;
 
-static computerChar: char = 'O';
-static userChar: char = 'X';
+static COMPUTER_CHAR: char = 'O';
+static USER_CHAR: char = 'X';
 
 fn main() {
-    playGame();
+    play_game();
 }
 
-fn playGame()
-{
+fn play_game() {
     println!("Tic Tac Toe!!");
-    let mut board = resetBoard();
-    let mut gameOver = false;
-    let mut computerWon = false;
-    let mut userWon = false;
+    let mut board = reset_board();
+    let mut computer_won = false;
 
-    printGameBoard(&board);
-    while(!gameOver)
-    {
-      getUserInput(&mut board);
-      printGameBoard(&board);
-      userWon = checkForWinner(&board);
-      if(userWon)
-      {
-          gameOver = true;
-          break;
-      }
-      makeComputerMove(&mut board);
-      printGameBoard(&board);
-      computerWon = checkForWinner(&board);
-      if(computerWon)
-      {
-          gameOver = true;
-          break;
-      }
+    print_game_board(&board);
+    loop {
+        get_user_input(&mut board);
+        print_game_board(&board);
+        if check_for_winner(&board) {
+            break;
+        }
+        make_computer_move(&mut board);
+        print_game_board(&board);
+        if check_for_winner(&board) {
+            computer_won = true;
+            break;
+        }
     }
-
 
     println!("Game over!");
 
-    if(computerWon)
-    {
-      println!("The computer won.");
-    }
-    else
-    {
-      println!("You won.");
-    }
-    let mut done = false;
-    while(!done)
-    {
-      println!("Play again? Y/N");
-      let mut userMoveStr = String::new();
-      io::stdin().read_line(&mut userMoveStr)
-          .expect("failed to read line");
-      if(userMoveStr.trim() == "Y")
-      {
-        done = true;
-        playGame();
-      }
-      else if(userMoveStr.trim() == "N")
-      {
-        done = true;
-        break;
-      }
+    if computer_won {
+        println!("The computer won.");
+    } else {
+        println!("You won.");
     }
 
+    loop {
+        println!("Play again? Y/N");
+        let mut user_move_str = String::new();
+        io::stdin()
+            .read_line(&mut user_move_str)
+            .expect("failed to read line");
+        if user_move_str.trim() == "Y" {
+            play_game();
+        } else if user_move_str.trim() == "N" {
+            break;
+        }
+    }
 }
-fn resetBoard() -> [char; 9]
-{
+
+fn reset_board() -> [char; 9] {
     return ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 }
 
-fn getUserInput(v:&mut [char; 9])
-{
+fn get_user_input(v: &mut [char; 9]) {
     println!("Please type a number 1-9 for your move");
-    let mut userMoveStr = String::new();
-    io::stdin().read_line(&mut userMoveStr)
+    let mut user_move_str = String::new();
+    io::stdin()
+        .read_line(&mut user_move_str)
         .expect("failed to read line");
-    let userMove: i32 = userMoveStr.trim().parse()
-    .expect("Please type a number!");
-    if(v[(userMove - 1) as usize] == computerChar || v[(userMove - 1) as usize] == userChar)
-    {
+    let user_move: i32 = user_move_str.trim().parse().expect("Please type a number!");
+    if v[(user_move - 1) as usize] == COMPUTER_CHAR || v[(user_move - 1) as usize] == USER_CHAR {
         println!("Please select a cell that hasn't been selected yet.");
-        getUserInput(v);
-    }
-    else
-    {
-        v[(userMove - 1) as usize] = userChar;
+        get_user_input(v);
+    } else {
+        v[(user_move - 1) as usize] = USER_CHAR;
     }
 }
 
-fn printGameBoard(v: &[char; 9])
-{
+fn print_game_board(v: &[char; 9]) {
     println!("----------------------------------------");
     println!("\t{}|{}|{}", v[0], v[1], v[2]);
     println!("\t{}|{}|{}", v[3], v[4], v[5]);
@@ -104,33 +79,24 @@ fn printGameBoard(v: &[char; 9])
     println!("");
 }
 
-fn makeComputerMove(v: &mut [char; 9])
-{
-    let mut madeAMove = false;
-    while(!madeAMove)
-    {
-      let mut rng = rand::thread_rng();
-      let range = Range::new(0, 9);
-      let mut rand = range.ind_sample(&mut rng);
-      if(v[(rand) as usize] != computerChar && v[(rand) as usize] != userChar)
-      {
-        v[(rand) as usize] = computerChar;
-        println!("Computer put an {} at {}.", computerChar, rand + 1);
-        println!("");
-        madeAMove = true;
-      }
+fn make_computer_move(v: &mut [char; 9]) {
+    let mut made_a_move = false;
+    while !made_a_move {
+        let mut rng = rand::thread_rng();
+        let range = Range::new(0, 9);
+        let rand = range.ind_sample(&mut rng);
+        if v[(rand) as usize] != COMPUTER_CHAR && v[(rand) as usize] != USER_CHAR {
+            v[(rand) as usize] = COMPUTER_CHAR;
+            println!("Computer put an {} at {}.", COMPUTER_CHAR, rand + 1);
+            println!("");
+            made_a_move = true;
+        }
     }
 }
 
-fn checkForWinner(v: &[char; 9]) -> bool
-{
-    return ((v[0] == v[1] && v[1] == v[2]) ||
-            (v[0] == v[3] && v[3] == v[6]) ||
-            (v[0] == v[4] && v[4] == v[8]) ||
-            (v[1] == v[4] && v[4] == v[7]) ||
-            (v[2] == v[4] && v[4] == v[6]) ||
-            (v[3] == v[4] && v[4] == v[5]) ||
-            (v[2] == v[5] && v[5] == v[8]) ||
-            (v[6] == v[7] && v[7] == v[8]))
-
+fn check_for_winner(v: &[char; 9]) -> bool {
+    return (v[0] == v[1] && v[1] == v[2]) || (v[0] == v[3] && v[3] == v[6])
+        || (v[0] == v[4] && v[4] == v[8]) || (v[1] == v[4] && v[4] == v[7])
+        || (v[2] == v[4] && v[4] == v[6]) || (v[3] == v[4] && v[4] == v[5])
+        || (v[2] == v[5] && v[5] == v[8]) || (v[6] == v[7] && v[7] == v[8]);
 }
