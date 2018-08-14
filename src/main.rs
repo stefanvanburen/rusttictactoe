@@ -52,7 +52,7 @@ fn play_game() {
 }
 
 fn reset_board() -> [char; 9] {
-    return ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 }
 
 fn get_user_input(v: &mut [char; 9]) {
@@ -76,7 +76,7 @@ fn print_game_board(v: &[char; 9]) {
     println!("\t{}|{}|{}", v[3], v[4], v[5]);
     println!("\t{}|{}|{}", v[6], v[7], v[8]);
     println!("----------------------------------------");
-    println!("");
+    println!();
 }
 
 fn make_computer_move(v: &mut [char; 9]) {
@@ -88,19 +88,19 @@ fn make_computer_move(v: &mut [char; 9]) {
         if v[(rand) as usize] != COMPUTER_CHAR && v[(rand) as usize] != USER_CHAR {
             v[(rand) as usize] = COMPUTER_CHAR;
             println!("Computer put an {} at {}.", COMPUTER_CHAR, rand + 1);
-            println!("");
+            println!();
             made_a_move = true;
         }
     }
 }
 
 fn check_for_winner(v: &[char; 9]) -> bool {
-    return (v[0] == v[1] && v[1] == v[2])
+    (v[0] == v[1] && v[1] == v[2])
         || (v[0] == v[3] && v[3] == v[6])
         || (v[0] == v[4] && v[4] == v[8])
         || (v[1] == v[4] && v[4] == v[7])
         || (v[2] == v[4] && v[4] == v[6])
         || (v[3] == v[4] && v[4] == v[5])
         || (v[2] == v[5] && v[5] == v[8])
-        || (v[6] == v[7] && v[7] == v[8]);
+        || (v[6] == v[7] && v[7] == v[8])
 }
