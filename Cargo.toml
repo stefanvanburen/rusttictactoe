@@ -1,7 +1,8 @@
 [package]
-name = "guessing_game"
+name = "tictactoe"
 version = "0.1.0"
-authors = ["Ian"]
+authors = ["Stefan VanBuren <vanburenstefan@gmail.com>"]
+edition = "2018"
 
 [dependencies]
 
