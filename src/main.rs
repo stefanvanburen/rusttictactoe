@@ -1,5 +1,5 @@
 extern crate rand;
-use rand::distributions::{IndependentSample, Range};
+use rand::distributions::{Distribution, Uniform};
 use std::io;
 
 static COMPUTER_CHAR: char = 'O';
@@ -83,8 +83,8 @@ fn make_computer_move(v: &mut [char; 9]) {
     let mut made_a_move = false;
     while !made_a_move {
         let mut rng = rand::thread_rng();
-        let range = Range::new(0, 9);
-        let rand = range.ind_sample(&mut rng);
+        let range = Uniform::from(0..9);
+        let rand = range.sample(&mut rng);
         if v[(rand) as usize] != COMPUTER_CHAR && v[(rand) as usize] != USER_CHAR {
             v[(rand) as usize] = COMPUTER_CHAR;
             println!("Computer put an {} at {}.", COMPUTER_CHAR, rand + 1);
